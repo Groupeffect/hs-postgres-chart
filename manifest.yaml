@@ -1,0 +1,197 @@
+---
+# Source: ge-postgres/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ge-postgres
+  labels:
+    helm.sh/chart: ge-postgres-0.1.0
+    app.kubernetes.io/name: ge-postgres
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+automountServiceAccountToken: true
+---
+# Source: ge-postgres/templates/configmaps.yaml
+apiVersion: apps/v1
+kind: ConfigMap
+metadata:
+  name: ge-postgres
+  labels:
+    helm.sh/chart: ge-postgres-0.1.0
+    app.kubernetes.io/name: ge-postgres
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+data:
+  POSTGRES_PASSWORD: admin1234
+  POSTGRES_USER: postgres
+  POSTGRES_DB: postgres
+  POSTGRES_HOST: ge-postgres.default.svc.cluster.local
+  POSTGRES_PORT: 5432
+  PGDATA: /var/lib/postgresql/data
+  GITEA_POSTGRES_USER: gitea
+  GITEA_POSTGRES_DB: gitea
+  GITEA_POSTGRES_PASSWORD: admin1234
+  FROST_POSTGRES_USER: sensorthings
+  FROST_POSTGRES_DB: sensorthings
+  FROST_POSTGRES_PASSWORD: admin1234
+  BACKEND_POSTGRES_USER: admin
+  BACKEND_POSTGRES_DB: backend
+  BACKEND_POSTGRES_PASSWORD: admin1234
+  WEBSOCKET_POSTGRES_USER: admin
+  WEBSOCKET_POSTGRES_DB: websocket
+  WEBSOCKET_POSTGRES_PASSWORD: admin1234
+  cmd_db_creator.sh: |
+    #!/bin/sh
+    # CREATE EXTENSION vector; has to be installed on os level
+    set -e
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "postgres" <<-EOSQL
+      CREATE USER $CUSTOM_POSTGRES_USER WITH PASSWORD '$CUSTOM_POSTGRES_PASSWORD';
+      CREATE DATABASE $CUSTOM_POSTGRES_DB;
+      ALTER USER $CUSTOM_POSTGRES_USER CREATEDB LOGIN;
+      ALTER DATABASE $CUSTOM_POSTGRES_DB OWNER TO $CUSTOM_POSTGRES_USER;
+      GRANT ALL ON SCHEMA public TO $CUSTOM_POSTGRES_USER;
+      GRANT CREATE ON DATABASE $CUSTOM_POSTGRES_DB TO $CUSTOM_POSTGRES_USER;
+      GRANT ALL PRIVILEGES ON DATABASE $CUSTOM_POSTGRES_DB TO $CUSTOM_POSTGRES_USER;
+      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO $CUSTOM_POSTGRES_USER;
+      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO $CUSTOM_POSTGRES_USER;
+      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON FUNCTIONS TO $CUSTOM_POSTGRES_USER;
+    EOSQL
+  entrypoint.sh: |
+    #!/bin/sh
+    # CREATE EXTENSION vector; has to be installed on os level
+    echo "### GITEA DB CREATING"
+    CUSTOM_POSTGRES_USER=$GITEA_POSTGRES_USER
+    CUSTOM_POSTGRES_DB=$GITEA_POSTGRES_DB
+    CUSTOM_POSTGRES_PASSWORD=$GITEA_POSTGRES_PASSWORD
+    . /app/cmd_db_creator.sh
+    echo "### BACKEND DB CREATING"
+    CUSTOM_POSTGRES_USER=$BACKEND_POSTGRES_USER
+    CUSTOM_POSTGRES_DB=$BACKEND_POSTGRES_DB
+    CUSTOM_POSTGRES_PASSWORD=$BACKEND_POSTGRES_PASSWORD
+    . /app/cmd_db_creator.sh
+    echo "### WEBSOCKET DB CREATING"
+    CUSTOM_POSTGRES_USER=$WEBSOCKET_POSTGRES_USER
+    CUSTOM_POSTGRES_DB=$WEBSOCKET_POSTGRES_DB
+    CUSTOM_POSTGRES_PASSWORD=$WEBSOCKET_POSTGRES_PASSWORD
+    . /app/cmd_db_creator.sh
+---
+# Source: ge-postgres/templates/persistentvolumes.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ge-postgres
+  labels:
+    helm.sh/chart: ge-postgres-0.1.0
+    app.kubernetes.io/name: ge-postgres
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: microk8s-hostpath # Or the name of your StorageClass
+  resources:
+    requests:
+      storage: 10Gi
+---
+# Source: ge-postgres/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    metallb.universe.tf/address-pool: default-addresspool
+  name: ge-postgres
+  labels:
+    helm.sh/chart: ge-postgres-0.1.0
+    app.kubernetes.io/name: ge-postgres
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 5432
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: ge-postgres
+    app.kubernetes.io/instance: release-name
+---
+# Source: ge-postgres/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ge-postgres
+  labels:
+    helm.sh/chart: ge-postgres-0.1.0
+    app.kubernetes.io/name: ge-postgres
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ge-postgres
+      app.kubernetes.io/instance: release-name
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: ge-postgres-0.1.0
+        app.kubernetes.io/name: ge-postgres
+        app.kubernetes.io/instance: release-name
+        app.kubernetes.io/version: "1.16.0"
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      serviceAccountName: ge-postgres
+      containers:
+        - name: ge-postgres
+          image: "postgis/postgis:17-3.5"
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: ge-postgres
+          ports:
+            - name: http
+              containerPort: 5432
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /docker-entrypoint-initdb.d
+              name: docker-entrypoint
+              readOnly: true
+            - mountPath: /var/lib/postgresql/data
+              name: ge-postgres-data
+      volumes:
+        - configMap: ge-postgres
+          defaultMode: 493
+          name: docker-entrypoint
+        - name: ge-postgres
+          persistentVolumeClaim:
+            claimName: ge-postgres
+---
+# Source: ge-postgres/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ge-postgres
+  labels:
+    helm.sh/chart: ge-postgres-0.1.0
+    app.kubernetes.io/name: ge-postgres
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  rules:
+    - host: "ge-postgres.dev.svc.cluster.local"
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: ge-postgres
+                port:
+                  number: 5432

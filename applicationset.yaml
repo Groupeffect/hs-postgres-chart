@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ge-postgres
+  namespace: argocd
+spec:
+  destination:
+    name: ""
+    namespace: dev
+    server: "https://kubernetes.default.svc"
+  source:
+    path: .
+    repoURL: "https://192.168.179.3:3000/groupeffect/postgres-chart.git"
+    targetRevision: main
+    helm:
+      valueFiles:
+        - values.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
+    syncOptions:
+      - PruneLast=true
+      - Replace=true
