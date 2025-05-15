@@ -120,9 +120,6 @@ volumes:
       claimName: ge-postgres
 # Additional volumeMounts on the output Deployment definition.
 volumeMounts:
-  - name: docker-entrypoint
-    mountPath: "/docker-entrypoint-initdb.d"
-    readOnly: true
   - name: ge-postgres
     mountPath: /var/lib/postgresql/data
 
