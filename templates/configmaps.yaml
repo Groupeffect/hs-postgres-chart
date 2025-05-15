@@ -5,8 +5,8 @@ metadata:
   labels:
     {{- include "ge-postgres.labels" . | nindent 4 }}
 data:
-  postgres_user: poestgres
-  # POSTGRES_USER: postgres
+  POSTGRES_USER: postgres
+  # postgres_user: poestgres
   # POSTGRES_DB: postgres
   # POSTGRES_HOST: ge-postgres.{{ .Release.Namespace }}.svc.cluster.local
   # POSTGRES_PORT: 5432
