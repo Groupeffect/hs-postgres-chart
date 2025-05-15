@@ -13,6 +13,16 @@ jobs:
 
       - name: Check out repository code
         uses: actions/checkout@v4
+      - name: Delete Applicationset via API
+        run: |
+          git clone https://192.168.179.3:3000/amir/hs-admin.git ADMIN
+          cp ADMIN/kube/config ~/.kube/config
+          . ADMIN/argocd/cli.sh
+          APPLICATION_NAME=postgres
+          APPLICATION_NAMESPACE=dev
+          argo_delete_application || echo "### no app found"
 
       - name: Deploy Applicationset
         run: |
+          echo "Starting app on argocd"
+          kubectl apply -f applicationset.yaml
