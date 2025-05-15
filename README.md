@@ -1,2 +1,2 @@
 # postgres-chart
-postgis 17
+postgis 17.
