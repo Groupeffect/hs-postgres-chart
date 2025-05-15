@@ -5,24 +5,6 @@ metadata:
   labels:
     {{- include "ge-postgres.labels" . | nindent 4 }} 
 data:
-  POSTGRES_PASSWORD: admin1234
-  POSTGRES_USER: postgres
-  POSTGRES_DB: postgres
-  POSTGRES_HOST: ge-postgres.{{ .Release.Namespace }}.svc.cluster.local
-  POSTGRES_PORT: 5432
-  PGDATA: /var/lib/postgresql/data
-  GITEA_POSTGRES_USER: gitea
-  GITEA_POSTGRES_DB: gitea
-  GITEA_POSTGRES_PASSWORD: admin1234
-  FROST_POSTGRES_USER: sensorthings
-  FROST_POSTGRES_DB: sensorthings
-  FROST_POSTGRES_PASSWORD: admin1234
-  BACKEND_POSTGRES_USER: admin
-  BACKEND_POSTGRES_DB: backend
-  BACKEND_POSTGRES_PASSWORD: admin1234
-  WEBSOCKET_POSTGRES_USER: admin
-  WEBSOCKET_POSTGRES_DB: websocket
-  WEBSOCKET_POSTGRES_PASSWORD: admin1234
   cmd_db_creator.sh: |
     #!/bin/sh
     # CREATE EXTENSION vector; has to be installed on os level
@@ -57,4 +39,22 @@ data:
     CUSTOM_POSTGRES_DB=$WEBSOCKET_POSTGRES_DB
     CUSTOM_POSTGRES_PASSWORD=$WEBSOCKET_POSTGRES_PASSWORD
     . /app/cmd_db_creator.sh
-    
+    POSTGRES_PASSWORD: admin1234
+  
+  POSTGRES_USER: postgres
+  POSTGRES_DB: postgres
+  POSTGRES_HOST: ge-postgres.{{ .Release.Namespace }}.svc.cluster.local
+  POSTGRES_PORT: 5432
+  PGDATA: /var/lib/postgresql/data
+  GITEA_POSTGRES_USER: gitea
+  GITEA_POSTGRES_DB: gitea
+  GITEA_POSTGRES_PASSWORD: admin1234
+  FROST_POSTGRES_USER: sensorthings
+  FROST_POSTGRES_DB: sensorthings
+  FROST_POSTGRES_PASSWORD: admin1234
+  BACKEND_POSTGRES_USER: admin
+  BACKEND_POSTGRES_DB: backend
+  BACKEND_POSTGRES_PASSWORD: admin1234
+  WEBSOCKET_POSTGRES_USER: admin
+  WEBSOCKET_POSTGRES_DB: websocket
+  WEBSOCKET_POSTGRES_PASSWORD: admin1234
