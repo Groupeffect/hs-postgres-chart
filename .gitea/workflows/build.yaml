@@ -18,7 +18,7 @@ jobs:
           git clone https://192.168.179.3:3000/amir/hs-admin.git ADMIN
           cp ADMIN/kube/config ~/.kube/config
           . ADMIN/argocd/cli.sh
-          APPLICATION_NAME=postgres
+          APPLICATION_NAME=ge-postgres
           APPLICATION_NAMESPACE=dev
           argo_delete_application || echo "### no app found"
 
