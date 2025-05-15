@@ -6,7 +6,7 @@ metadata:
     {{- include "ge-postgres.labels" . | nindent 4 }}
 data:
   POSTGRES_USER: postgres
-  POSTGRES_DB: postgres
+  POSTGRES_DB: backend
   POSTGRES_PASSWORD: admin1234
   # POSTGRES_HOST: ge-postgres.{{ .Release.Namespace }}.svc.cluster.local
   # POSTGRES_PORT: 5432
