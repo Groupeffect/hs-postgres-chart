@@ -10,7 +10,7 @@ spec:
     server: "https://kubernetes.default.svc"
   source:
     path: .
-    repoURL: "https://192.168.179.3:3000/groupeffect/postgres-chart.git"
+    repoURL: "https://192.168.179.3:3000/groupeffect/hs-postgres-chart.git"
     targetRevision: main
     helm:
       valueFiles:
@@ -22,5 +22,10 @@ spec:
       prune: true
       selfHeal: false
     syncOptions:
-      - PruneLast=true
       - Replace=true
+    retry:
+      limit: 2
+      backoff:
+        duration: 5s
+        maxDuration: 3m0s
+        factor: 2
