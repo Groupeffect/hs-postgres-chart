@@ -8,12 +8,12 @@ data:
   POSTGRES_USER: postgres
   POSTGRES_DB: backend
   POSTGRES_PASSWORD: admin1234
+  POSTGRES_PORT: 5432
+  PGDATA: /var/lib/postgresql/data
+  GITEA_POSTGRES_USER: gitea
+  GITEA_POSTGRES_DB: gitea
+  GITEA_POSTGRES_PASSWORD: admin1234
   # POSTGRES_HOST: ge-postgres.{{ .Release.Namespace }}.svc.cluster.local
-  # POSTGRES_PORT: 5432
-  # PGDATA: /var/lib/postgresql/data
-  # GITEA_POSTGRES_USER: gitea
-  # GITEA_POSTGRES_DB: gitea
-  # GITEA_POSTGRES_PASSWORD: admin1234
   # FROST_POSTGRES_USER: sensorthings
   # FROST_POSTGRES_DB: sensorthings
   # FROST_POSTGRES_PASSWORD: admin1234
