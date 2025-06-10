@@ -10,7 +10,7 @@ spec:
     server: "https://kubernetes.default.svc"
   source:
     path: .
-    repoURL: "https://192.168.179.3:3000/groupeffect/hs-postgres-chart.git"
+    repoURL: "http://gitea-http.gitea.svc.cluster.local:3000/groupeffect/hs-postgres-chart.git"
     targetRevision: main
     helm:
       valueFiles:
