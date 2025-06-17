@@ -126,19 +126,15 @@ autoscaling:
 
 # Additional volumes on the output Deployment definition.
 volumes:
-  # - name: docker-entrypoint
-  #   configMap: ge-postgres
-  #   defaultMode: 0755
   - name: ge-postgres
+    defaultMode: 777
     persistentVolumeClaim:
       claimName: ge-postgres
 # Additional volumeMounts on the output Deployment definition.
 volumeMounts:
-  # - name: docker-entrypoint
-  #   mountPath: "/docker-entrypoint-initdb.d"
-  #   readOnly: true
   - name: ge-postgres
     mountPath: /var/lib/postgresql/data
+    readOnly: false
 
 nodeSelector: {}
 tolerations: []
