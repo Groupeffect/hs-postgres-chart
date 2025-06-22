@@ -72,8 +72,9 @@ service:
   # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
   port: 5432
   annotations:
-    metallb.universe.tf/address-pool: configmap-public-ips
-    metallb.universe.tf/loadBalancerIPs: 192.168.0.4
+    metallbLoadBalancer:
+      ip: 192.168.0.3
+      pool: configmap-public-ips
 
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
