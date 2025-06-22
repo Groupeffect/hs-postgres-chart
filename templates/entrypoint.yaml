@@ -13,31 +13,31 @@ data:
     echo "### Groupeffect CLI CREATE CUSTOM DB: $CUSTOM_POSTGRES_DB"
     set -e
     psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
-      CREATE USER $CUSTOM_POSTGRES_USER WITH PASSWORD '$CUSTOM_POSTGRES_PASSWORD';
-      CREATE DATABASE $CUSTOM_POSTGRES_DB WITH OWNER $CUSTOM_POSTGRES_USER TEMPLATE template0 ENCODING UTF8 LC_COLLATE 'en_US.UTF-8' LC_CTYPE 'en_US.UTF-8';
-      ALTER USER $CUSTOM_POSTGRES_USER CREATEDB LOGIN;
-      ALTER DATABASE $CUSTOM_POSTGRES_DB OWNER TO $CUSTOM_POSTGRES_USER;
-      GRANT ALL ON SCHEMA public TO $CUSTOM_POSTGRES_USER;
-      GRANT CREATE ON DATABASE $CUSTOM_POSTGRES_DB TO $CUSTOM_POSTGRES_USER;
-      GRANT ALL PRIVILEGES ON DATABASE $CUSTOM_POSTGRES_DB TO $CUSTOM_POSTGRES_USER;
-      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO $CUSTOM_POSTGRES_USER;
-      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO $CUSTOM_POSTGRES_USER;
-      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON FUNCTIONS TO $CUSTOM_POSTGRES_USER;
+    CREATE USER $CUSTOM_POSTGRES_USER WITH PASSWORD '$CUSTOM_POSTGRES_PASSWORD';
+    CREATE DATABASE $CUSTOM_POSTGRES_DB WITH OWNER $CUSTOM_POSTGRES_USER TEMPLATE template0 ENCODING UTF8 LC_COLLATE 'en_US.UTF-8' LC_CTYPE 'en_US.UTF-8';
+    ALTER USER $CUSTOM_POSTGRES_USER CREATEDB LOGIN;
+    ALTER DATABASE $CUSTOM_POSTGRES_DB OWNER TO $CUSTOM_POSTGRES_USER;
+    GRANT ALL ON SCHEMA public TO $CUSTOM_POSTGRES_USER;
+    GRANT CREATE ON DATABASE $CUSTOM_POSTGRES_DB TO $CUSTOM_POSTGRES_USER;
+    GRANT ALL PRIVILEGES ON DATABASE $CUSTOM_POSTGRES_DB TO $CUSTOM_POSTGRES_USER;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO $CUSTOM_POSTGRES_USER;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO $CUSTOM_POSTGRES_USER;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON FUNCTIONS TO $CUSTOM_POSTGRES_USER;
     EOSQL
     }
     cmd_setup_postgrest_backend(){
-      # grant select on public.api_document to $CUSTOM_POSTGRES_USER;
-      # grant select on public.api_service to $CUSTOM_POSTGRES_USER;
-      # create schema "public";
-      echo "### Groupeffect PostgRest DB setup: $CUSTOM_POSTGRES_DB"
-      set -e
-      psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname $CUSTOM_POSTGRES_DB <<-EOSQL
-        create role $CUSTOM_POSTGRES_USER nologin;
-        create role authenticator noinherit login password '$CUSTOM_POSTGRES_PASSWORD';
-        grant usage on schema "public" to $CUSTOM_POSTGRES_USER;
-        grant $CUSTOM_POSTGRES_USER to authenticator;
-        grant select on public to $CUSTOM_POSTGRES_USER;
-      EOSQL
+    # grant select on public.api_document to $CUSTOM_POSTGRES_USER;
+    # grant select on public.api_service to $CUSTOM_POSTGRES_USER;
+    # create schema "public";
+    echo "### Groupeffect PostgRest DB setup: $CUSTOM_POSTGRES_DB"
+    set -e
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname $CUSTOM_POSTGRES_DB <<-EOSQL
+      create role $CUSTOM_POSTGRES_USER nologin;
+      create role authenticator noinherit login password '$CUSTOM_POSTGRES_PASSWORD';
+      grant usage on schema "public" to $CUSTOM_POSTGRES_USER;
+      grant $CUSTOM_POSTGRES_USER to authenticator;
+      grant select on public to $CUSTOM_POSTGRES_USER;
+    EOSQL
     }
   {{- range .Values.databases }}
     cmd_setup_{{ .name }}_environments(){
@@ -49,11 +49,6 @@ data:
       cmd_setup_postgrest_backend
   {{- end }}
     }
-  {{- if eq .enable "true" }}
-    # RUN SCRIPT
-    cmd_setup_{{ .name }}_environments
-    # END RUN
-  {{- end }}
   {{- end }}
 
 
