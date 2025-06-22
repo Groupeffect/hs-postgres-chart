@@ -20,12 +20,26 @@ maindatabase:
   PGDATA: /var/lib/postgresql/data
 
 databases:
+  - name: backend
+    password: "$POSTGRES_PASSWORD"
+    username: "$POSTGRES_USER"
+    postgrest: "false"
+    enable: "default"
   - name: wiki
     password: admin1234
     username: postgres
+    postgrest: "true"
+    enable: "true"
   - name: alphadb
     password: admin1234
     username: postgres
+    enable: "true"
+    postgrest: "false"
+  - name: gitea
+    password: admin1234
+    username: gitea
+    enable: "false"
+    postgrest: "false"
 
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []

@@ -6,6 +6,9 @@ metadata:
     {{- include "ge-postgres.labels" . | nindent 4 }}
 data:
   databasesetup.sh: |
+    echo "ENTRYPOINT CUSTOM SETTING LOADED"
+    echo "CUSTOM_POSTGRES_USER:$CUSTOM_POSTGRES_USER"
+    echo "CUSTOM_POSTGRES_DB:$CUSTOM_POSTGRES_DB"
     cmd_create_database(){
     echo "### Groupeffect CLI CREATE CUSTOM DB: $CUSTOM_POSTGRES_DB"
     set -e
@@ -36,13 +39,22 @@ data:
         grant select on public to $CUSTOM_POSTGRES_USER;
       EOSQL
     }
-    echo "CUSTOM SETTING LOADED"
-    echo '
-    Parameters:
-    CUSTOM_POSTGRES_PASSWORD
-    CUSTOM_POSTGRES_USER
-    CUSTOM_POSTGRES_DB
-    '
-    echo "CUSTOM_POSTGRES_USER:$CUSTOM_POSTGRES_USER"
-    echo "CUSTOM_POSTGRES_DB:$CUSTOM_POSTGRES_DB"
+  {{- range .Values.databases }}
+    cmd_setup_{{ .name }}_environments(){
+      CUSTOM_POSTGRES_DB={{ .name }}
+      CUSTOM_POSTGRES_USER={{ .username }}
+      CUSTOM_POSTGRES_PASSWORD={{ .password }}
+      cmd_create_database
+  {{- if eq .postgrest "true" }}
+      cmd_setup_postgrest_backend
+  {{- end }}
+    }
+  {{- if eq .enable "true" }}
+    # RUN SCRIPT
+    cmd_setup_{{ .name }}_environments
+    # END RUN
+  {{- end }}
+  {{- end }}
+
+
     
