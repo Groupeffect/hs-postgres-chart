@@ -13,9 +13,12 @@ data:
   GITEA_POSTGRES_USER: gitea
   GITEA_POSTGRES_DB: gitea
   GITEA_POSTGRES_PASSWORD: admin1234
-  ALPHA_POSTGRES_USER: amir
+  ALPHA_POSTGRES_USER: postgres
   ALPHA_POSTGRES_DB: alphadb
   ALPHA_POSTGRES_PASSWORD: admin1234
+  WIKI_POSTGRES_USER: postgres
+  WIKI_POSTGRES_DB: wiki
+  WIKI_POSTGRES_PASSWORD: admin1234
   # POSTGRES_HOST: ge-postgres.{{ .Release.Namespace }}.svc.cluster.local
   # FROST_POSTGRES_USER: sensorthings
   # FROST_POSTGRES_DB: sensorthings
