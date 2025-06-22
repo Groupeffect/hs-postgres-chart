@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ge-postgres
+  namespace: argocd
+spec:
+  destination:
+    name: ""
+    namespace: dev
+    server: "https://kubernetes.default.svc"
+  source:
+    path: .
+    repoURL: "https://github.com/Groupeffect/hs-postgres-chart.git"
+    targetRevision: main
+    helm:
+      valueFiles:
+        - values.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false
+    syncOptions:
+      - Replace=true
+    retry:
+      limit: 2
+      backoff:
+        duration: 5s
+        maxDuration: 1m0s
+        factor: 2
