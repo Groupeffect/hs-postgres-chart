@@ -38,7 +38,7 @@ databases:
   - name: gitea
     password: admin1234
     username: gitea
-    enable: "false"
+    enable: "true"
     postgrest: "false"
 
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
