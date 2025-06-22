@@ -145,11 +145,16 @@ volumes:
     defaultMode: 777
     persistentVolumeClaim:
       claimName: ge-postgres
+  - name: entrypoint
+    configMap:
+      name: entrypoint
 # Additional volumeMounts on the output Deployment definition.
 volumeMounts:
   - name: ge-postgres
     mountPath: /var/lib/postgresql/data
     readOnly: false
+  - name: entrypoint
+    mountPath: "/docker-entrypoint-initdb.d"
 
 nodeSelector: {}
 tolerations: []
