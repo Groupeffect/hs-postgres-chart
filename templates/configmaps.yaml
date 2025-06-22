@@ -5,8 +5,8 @@ metadata:
   labels:
     {{- include "ge-postgres.labels" . | nindent 4 }}
 data:
-  POSTGRES_USER: {{ .Values.maindatabase.POSTGRES_USER }}
-  POSTGRES_DB: {{ .Values.maindatabase.POSTGRES_DB }}
-  POSTGRES_PASSWORD: {{ .Values.maindatabase.POSTGRES_PASSWORD }}
-  POSTGRES_PORT: {{ .Values.maindatabase.POSTGRES_PORT }}
-  PGDATA: {{ .Values.maindatabase.PGDATA }}
+  POSTGRES_USER: "{{ .Values.maindatabase.POSTGRES_USER }}"
+  POSTGRES_DB: "{{ .Values.maindatabase.POSTGRES_DB }}"
+  POSTGRES_PASSWORD: "{{ .Values.maindatabase.POSTGRES_PASSWORD }}"
+  POSTGRES_PORT: "{{ .Values.maindatabase.POSTGRES_PORT }}"
+  PGDATA: "{{ .Values.maindatabase.PGDATA }}"
