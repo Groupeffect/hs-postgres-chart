@@ -6,7 +6,7 @@ metadata:
     {{- include "ge-postgres.labels" . | nindent 4 }} 
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   storageClassName: microk8s-hostpath  # Or the name of your StorageClass
   resources:
     requests:
