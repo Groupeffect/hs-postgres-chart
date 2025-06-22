@@ -5,27 +5,8 @@ metadata:
   labels:
     {{- include "ge-postgres.labels" . | nindent 4 }}
 data:
-  POSTGRES_USER: postgres
-  POSTGRES_DB: backend
-  POSTGRES_PASSWORD: admin1234
-  POSTGRES_PORT: "5432"
-  PGDATA: /var/lib/postgresql/data
-  GITEA_POSTGRES_USER: gitea
-  GITEA_POSTGRES_DB: gitea
-  GITEA_POSTGRES_PASSWORD: admin1234
-  ALPHA_POSTGRES_USER: postgres
-  ALPHA_POSTGRES_DB: alphadb
-  ALPHA_POSTGRES_PASSWORD: admin1234
-  WIKI_POSTGRES_USER: postgres
-  WIKI_POSTGRES_DB: wiki
-  WIKI_POSTGRES_PASSWORD: admin1234
-  # POSTGRES_HOST: ge-postgres.{{ .Release.Namespace }}.svc.cluster.local
-  # FROST_POSTGRES_USER: sensorthings
-  # FROST_POSTGRES_DB: sensorthings
-  # FROST_POSTGRES_PASSWORD: admin1234
-  # BACKEND_POSTGRES_USER: admin
-  # BACKEND_POSTGRES_DB: backend
-  # BACKEND_POSTGRES_PASSWORD: admin1234
-  # WEBSOCKET_POSTGRES_USER: admin
-  # WEBSOCKET_POSTGRES_DB: websocket
-  # WEBSOCKET_POSTGRES_PASSWORD: admin1234
+  POSTGRES_USER: {{ .Values.maindatabase.POSTGRES_USER }}
+  POSTGRES_DB: {{ .Values.maindatabase.POSTGRES_DB }}
+  POSTGRES_PASSWORD: {{ .Values.maindatabase.POSTGRES_PASSWORD }}
+  POSTGRES_PORT: {{ .Values.maindatabase.POSTGRES_PORT }}
+  PGDATA: {{ .Values.maindatabase.PGDATA }}
