@@ -5,6 +5,7 @@ metadata:
   labels:
     {{- include "ge-postgres.labels" . | nindent 4 }} 
 spec:
+  finelizer: ""
   accessModes:
     - ReadWriteOnce
   storageClassName: microk8s-hostpath  # Or the name of your StorageClass
