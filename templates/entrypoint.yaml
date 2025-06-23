@@ -49,9 +49,6 @@ data:
       cmd_setup_postgrest_backend
   {{- end }}
     }
-  {{- if eq .enable "true" }}
-      cmd_setup_{{ .name }}_environments
-  {{- end }}
   {{- end }}
 
   
