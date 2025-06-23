@@ -37,7 +37,7 @@ databases:
     postgrest: "false"
   - name: gitea
     password: admin1234
-    username: gitea
+    username: postgres
     enable: "true"
     postgrest: "false"
 
